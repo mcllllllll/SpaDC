@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 __lib_name__ = "SpaDC"
-__lib_version__ = "0.1.0"
+__lib_version__ = "1.0.0"
 __description__ = "SpaDC"
 __url__ = "https://github.com/mcllllllll/SpaDC"
 __author__ = "Chuanlong Ma"
