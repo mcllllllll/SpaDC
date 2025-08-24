@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 __lib_name__ = "SpaDC"
 __lib_version__ = "1.0.0"
-__description__ = "SpaDC"
+__description__ = "Integrating spatial location, DNA sequence and chromatin accessibility via graph regularized convolutional neural network"
 __url__ = "https://github.com/mcllllllll/SpaDC"
 __author__ = "Chuanlong Ma"
-__author_email__ = "614396628@qq.com"
+__author_email__ = "2023202210190@whu.edu.cn"
 __license__ = "MIT"
 __keywords__ = ["spatial epigenomics"]
 __requires__ = []
