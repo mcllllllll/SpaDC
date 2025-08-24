@@ -1,6 +1,6 @@
 # SpaDC
 
-![SpaDC_Overview](https://github.com/mcllllllll/SpaDC/SpaDC_Overview.png)
+![SpaDC_Overview](https://raw.githubusercontent.com/mcllllllll/SpaDC/master/SpaDC_Overview.png)
 
 
 ## Overview
