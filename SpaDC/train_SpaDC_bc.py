@@ -152,6 +152,7 @@ def train_SpaDC_bc(adata, ATAC, H3K27ac, seq, hidden_size=32, n_epochs1=100, n_e
         torch.save(model.state_dict(), 'result/model.pt')     
 
     adata.obsm['SpaDC_bc'] = model.get_embedding().to('cpu').detach().numpy()  
+    return adata
 
 
 

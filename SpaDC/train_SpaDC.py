@@ -124,6 +124,7 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
     cell_embedding = model.get_embedding().to('cpu').detach().numpy()
 
     adata.obsm['SpaDC'] = cell_embedding
+    return adata
 
 
 
