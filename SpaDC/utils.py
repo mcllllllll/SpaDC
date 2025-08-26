@@ -15,6 +15,7 @@ import hnswlib
 import scipy
 from torch.utils.data import Dataset, DataLoader
 from model import SpaDC
+import pybedtools
 
 
 class dataset(Dataset):
@@ -397,6 +398,81 @@ def batch_entropy_mixing_score(data, batches, n_neighbors=100, n_pools=100, n_sa
                           for i in range(n_samples_per_pool)])
     Score = score / float(n_pools)
     return Score / float(np.log2(N_batches))
+
+def chr_split(x):
+    chr_special = {'GL456233.1':'chrX_GL456233_random', 'GL456212.1':'chr1_GL456212_random', 'JH584304.1':'chrUn_JH584304', 
+                   'GL456216.1':'chr4_GL456216_random', 'JH584292.1':'chr4_JH584292_random', 'JH584295.1':'chr4_JH584295_random'}
+    chr, start, end = x.split('-')
+    if chr in chr_special:
+        chr = chr_special[chr]
+    return chr, start, end
+
+def integrate_data(adata1, adata2, save_folder, fasta_file, seq_len):
+    index = adata1.var_names
+
+    index = pd.DataFrame(chr_split(x) for x in index)
+
+    index.to_csv(save_folder+'/adata1.bed',sep='\t',header=False, index=False)
+
+    index = adata2.var_names
+
+    index = pd.DataFrame(chr_split(x) for x in index)
+
+    index.to_csv(save_folder+'/adata2.bed',sep='\t',header=False, index=False)
+
+    adata1_bed = pybedtools.BedTool(save_folder+'/adata1.bed')
+    adata2_bed =   pybedtools.BedTool(save_folder+'/adata2.bed')                  
+
+    overlap = adata1_bed.intersect(adata2_bed,wo=True)
+
+    overlap.moveto(save_folder+'/overlap.bed')
+
+    df = pd.read_csv(save_folder+'/overlap.bed', sep='\t', header=None)
+
+    df['start'] = ''
+    df['end'] = ''
+
+    df['start'] = np.where(df.iloc[:, 1] <= df.iloc[:, 4], df.iloc[:, 1], df.iloc[:, 4])
+    df['end'] = np.where(df.iloc[:, 2] >= df.iloc[:, 5], df.iloc[:, 2], df.iloc[:, 5])
+    index = df.loc[:, [0, 'start', 'end']]
+
+    seq, _ = make_bed_seqs_from_df(index, fasta_file, seq_len)
+
+    file = open(save_folder+'/overlap_seqs.txt','a')
+    file.write('seq\n')
+    for i in range(len(seq)):
+        s = seq[i] + '\n'
+        file.write(s)
+    file.close()
+
+    adata1_matrix = np.array(adata1.X.todense().transpose())
+    adata2_matrix = np.array(adata2.X.todense().transpose())
+
+    adata1_var_name= []
+    adata2_var_name = []
+
+    for i in range(len(df)):
+        adata1_var_name.append('-'.join('%s'%i for i in df.iloc[i, 0:3]))
+        adata2_var_name.append('-'.join('%s'%i for i in df.iloc[i, 3:6]))
+
+    adata1_index =  list(adata1.var_names.get_indexer(adata1_var_name))
+    adata2_index  =  list(adata2.var_names.get_indexer(adata2_var_name))
+
+    new_matrix = np.hstack((adata1_matrix[adata1_index], adata2_matrix[adata2_index]))
+    new_matrix[np.where(new_matrix != 0)] = 1
+
+    new_matrix = scipy.sparse.csr_matrix(new_matrix)
+
+    adata = ad.AnnData(new_matrix.transpose())
+    adata.obs['batch'] = np.array(['0'] * adata1.n_obs + ['1'] * adata2.n_obs)
+    adata.var['chr'] = index.loc[:, 0].values
+    adata.var['start'] = index.loc[:, 'start'].values
+    adata.var['end'] = index.loc[:, 'end'].values
+
+    adata.obs.index = np.concatenate((adata1.obs_names, adata2.obs_names),axis=0)
+
+    sc.write(save_folder+'/integrate.h5ad', adata)
+
 
 
 
