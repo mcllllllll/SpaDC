@@ -166,7 +166,6 @@ def lap_reg(A, weight):
 
     return torch.trace(torch.mm(torch.mm(weight.t(), L), weight))
 
-# 转为无向图
 def trans_undirected_graph(graph: Tensor):
     a = graph.T > graph
     return graph + graph.T * a - graph * a
@@ -186,7 +185,6 @@ def find_overlapping_coordinates(coord_list, coord, maxgap=0):
             result.append(i)
     return result
 
-# 设置种子
 def set_seed(seed):   
     random.seed(seed)
     np.random.seed(seed)
