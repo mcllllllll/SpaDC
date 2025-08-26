@@ -100,8 +100,8 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
             valid_loss_list.append(valid_loss)
 
         print_msg = (f'[{epoch}/{n_epochs}] ' + 
-                     f'train_loss: {train_loss:.5f} ' + 
-                     f'valid_loss: {valid_loss:.5f}')     
+                     f'train_loss: {train_loss:.6f} ' + 
+                     f'valid_loss: {valid_loss:.6f}')     
         print(print_msg)
     
     if show_loss == True:

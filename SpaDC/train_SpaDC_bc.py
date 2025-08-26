@@ -70,7 +70,7 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
         train_loss =  train_loss / n
 
         print_msg = (f'[{epoch}/{n_epochs1}] ' + 
-                     f'train_loss: {train_loss:.5f} ')
+                     f'train_loss: {train_loss:.6f} ')
         
         print(print_msg)
 
@@ -145,7 +145,7 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
         train_loss = train_loss / n                
 
         print_msg = (f'[{epoch-n_epochs1}/{n_epochs2}]' + 
-                     f'train_loss: {train_loss:.5f}')       
+                     f'train_loss: {train_loss:.6f}')       
         print(print_msg)    
         
     if save_model == True:
