@@ -11,3 +11,4 @@ tqdm==4.66.2
 matplotlib==3.10.0 
 pysam==0.22.0 
 pybedtools==0.9.1
+Bio==1.7.1

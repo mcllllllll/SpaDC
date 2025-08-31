@@ -16,6 +16,7 @@ import scipy
 from torch.utils.data import Dataset, DataLoader
 from model import SpaDC
 import pybedtools
+from Bio import SeqIO
 
 
 class dataset(Dataset):
@@ -465,6 +466,16 @@ def integrate_data(adata1, adata2, save_folder, fasta_file, seq_len):
     adata.obs.index = np.concatenate((adata1.obs_names, adata2.obs_names),axis=0)
 
     sc.write(save_folder+'/integrate.h5ad', adata)
+
+def pred_on_fasta(fa, model):
+    records = list(SeqIO.parse(fa, "fasta"))
+    seqs = [str(i.seq) for i in records]
+    seqs_dna = [dna_1hot_2vec(x) for x in seqs]
+    seqs_dna = torch.tensor(seqs_dna)
+    model.eval()
+    with torch.no_grad():
+        pred, _ = model(seqs_dna)
+    return pred
 
 
 
