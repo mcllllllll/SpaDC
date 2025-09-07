@@ -400,21 +400,13 @@ def batch_entropy_mixing_score(data, batches, n_neighbors=100, n_pools=100, n_sa
     Score = score / float(n_pools)
     return Score / float(np.log2(N_batches))
 
-def chr_split(x):
-    chr_special = {'GL456233.1':'chrX_GL456233_random', 'GL456212.1':'chr1_GL456212_random', 'JH584304.1':'chrUn_JH584304', 
-                   'GL456216.1':'chr4_GL456216_random', 'JH584292.1':'chr4_JH584292_random', 'JH584295.1':'chr4_JH584295_random'}
-    chr, start, end = x.split('-')
-    if chr in chr_special:
-        chr = chr_special[chr]
-    return chr, start, end
-
 def integrate_data(adata1, adata2, save_folder, fasta_file, seq_len):
     index = adata1.var_names
-    index = pd.DataFrame(chr_split(x) for x in index)
+    index = pd.DataFrame(x.split('-') for x in index)
     index.to_csv(save_folder+'/adata1.bed',sep='\t',header=False, index=False)
 
     index = adata2.var_names
-    index = pd.DataFrame(chr_split(x) for x in index)
+    index = pd.DataFrame(x.split('-') for x in index)
     index.to_csv(save_folder+'/adata2.bed',sep='\t',header=False, index=False)
 
     adata1_bed = pybedtools.BedTool(save_folder+'/adata1.bed')
