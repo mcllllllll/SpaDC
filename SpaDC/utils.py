@@ -14,7 +14,7 @@ from sklearn.neighbors import NearestNeighbors
 import hnswlib
 import scipy
 from torch.utils.data import Dataset, DataLoader
-from model import SpaDC
+from .model import SpaDC
 import pybedtools
 from Bio import SeqIO
 
