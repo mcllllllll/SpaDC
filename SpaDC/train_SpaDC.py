@@ -1,6 +1,7 @@
 from torch.utils.data import DataLoader
 from .utils import dataset, set_seed, construct_graph_by_coordinate, trans_undirected_graph, dna_1hot_2vec, lap_reg
 import torch
+import numpy as np
 from .model import SpaDC
 import torch.nn.functional as F
 from scipy.sparse import coo_matrix
@@ -27,7 +28,7 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
     # peak × 1344
     seqs_dna = seq['seq']
     seqs_dna = [dna_1hot_2vec(x) for x in seqs_dna]
-    seqs_dna = torch.tensor(seqs_dna)
+    seqs_dna = torch.tensor(np.array(seqs_dna))
     X_train, X_valid, y_train, y_valid = train_test_split(seqs_dna, atac, test_size=0.2, shuffle=True, random_state=0)
 
     train_data = dataset(X_train, y_train)

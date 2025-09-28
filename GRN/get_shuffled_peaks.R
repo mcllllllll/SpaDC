@@ -1,7 +1,7 @@
 library(Biostrings)
 library(rtracklayer)
 library(BSgenome.Mmusculus.UCSC.mm10) 
-setwd("/home/nas2/biod/machuanlong/data/GRN/misar")
+setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
 
 get.seqs <- function (org, regions, no.cores=1) {
 
@@ -46,17 +46,17 @@ get.seqs <- function (org, regions, no.cores=1) {
 # we used command line script fasta_ushuffle to generate shuffled sequences, get shuffled_peaks.fasta
 dir.create("Mus_musculus_motif_fasta")
 
-# Origin: Generated from the Peak-Gene section in Tutorials/GRN.ipynb
-bed <- import.bed("result/all_top_peaks.bed")  
+bed <- import.bed("ATAC.bed")  
+bed <- bed[grepl("^chr", seqnames(bed))]
 bed <- resize(bed, width = 1344, fix = "center")
 set.seed(10)
-examples <- sample(bed, 1000)
+examples <- sample(bed, 10000)
 seqs <- get.seqs(BSgenome.Mmusculus.UCSC.mm10, examples, 1)
 writeXStringSet(seqs, "Mus_musculus_motif_fasta/example_peaks.fasta", format = "fasta", width = 1344)
 
-cmd1 <- "sed 's/\r$//' data/GRN/misar/Mus_musculus_motif_fasta/example_peaks.fasta > data/GRN/misar/Mus_musculus_motif_fasta/example_peaks_clean.fasta"
+cmd1 <- "sed 's/\r$//' data/GRN/p22/Mus_musculus_motif_fasta/example_peaks.fasta > data/GRN/p22/Mus_musculus_motif_fasta/example_peaks_clean.fasta"
 system(cmd1)
-cmd2 <- "fasta_ushuffle/fasta_ushuffle -k 2 < data/GRN/misar/Mus_musculus_motif_fasta/example_peaks_clean.fasta > data/GRN/misar/Mus_musculus_motif_fasta/shuffled_peaks.fasta"
+cmd2 <- "fasta_ushuffle/fasta_ushuffle -k 2 < data/GRN/p22/Mus_musculus_motif_fasta/example_peaks_clean.fasta > data/GRN/p22/Mus_musculus_motif_fasta/shuffled_peaks.fasta"
 system(cmd2)
 
 

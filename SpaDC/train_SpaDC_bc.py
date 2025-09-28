@@ -7,8 +7,8 @@ import numpy as np
 from tqdm import tqdm
 from scipy.sparse import coo_matrix
     
-def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100, n_epochs2 = 100, 
-                       batch_size=1024, lr=1e-2, lambda1=1e-8, lambda2 = 1e-9, random_seed=40, 
+def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100, n_epochs2=100, 
+                       batch_size=1024, lr=1e-2, lambda1=1e-8, lambda2=1e-9, random_seed=40, 
                        save_model=False, device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
     # seed_everything()
     set_seed(random_seed)
@@ -29,7 +29,7 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
     #peak × 1344
     seqs_dna = seq['seq']
     seqs_dna = [dna_1hot_2vec(x) for x in seqs_dna]
-    seqs_dna = torch.tensor(seqs_dna)
+    seqs_dna = torch.tensor(np.array(seqs_dna))
 
     train_data = dataset(seqs_dna, matrix)
 

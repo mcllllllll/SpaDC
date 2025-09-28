@@ -1,10 +1,10 @@
 library(TFBSTools)
 library(RSQLite)
 library(Biostrings)
-setwd("/home/nas2/biod/machuanlong/data/GRN/misar")
+setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
 
 # Connect to JASPAR2024 database
-jaspar_db <- dbConnect(RSQLite::SQLite(), "JASPAR2024.sqlite")
+jaspar_db <- dbConnect(RSQLite::SQLite(), "/tmp/JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
 opts <- list(species = "Mus musculus", collection = "CORE")
 motifs <- getMatrixSet(jaspar_db, opts)
 
@@ -23,7 +23,7 @@ for (i in 1:length(motifs)) {
   
   set.seed(10)
   out <- apply(ppm, 2, function(x) {
-    return(sample(rownames(ppm), 1000, replace = T, prob = x))  
+    return(sample(rownames(ppm), length(shuffled_pks), replace = T, prob = x))  
   })
   
   motif_seqs <- apply(out, 1, function(x) paste(x, collapse = ""))

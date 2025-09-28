@@ -6,8 +6,8 @@ library(GenomicRanges)
 library(BSgenome.Mmusculus.UCSC.mm10) 
 library(Biostrings)
 library(stringr)
-setwd("/home/nas2/biod/machuanlong/data/GRN/misar")
-peak_file <- "result/all_top_peaks.bed"
+setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
+peak_file <- "result/6clusters_CRE.bed"
 output_dir <- "peak_motif_perturbation"
 dir.create(output_dir, showWarnings = FALSE)
 
@@ -30,7 +30,7 @@ peak_ids <- paste0(seqnames(peak_1344bp), "-", start(peak_gr), "-", end(peak_gr)
 names(peak_1344bp) <- peak_ids
 
 # === 3. Load mouse motif matrices from JASPAR2024 database ===
-jaspar_db <- dbConnect(RSQLite::SQLite(), "JASPAR2024.sqlite")
+jaspar_db <- dbConnect(RSQLite::SQLite(), "/tmp/JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
 opts <- list(species = "Mus musculus", collection = "CORE")
 out <- getMatrixSet(jaspar_db, opts)
 if (!isTRUE(all.equal(name(out), names(out)))) {
@@ -91,7 +91,7 @@ for (i in seq_along(peak_1344bp)) {
     clean_id <- gsub("[^A-Za-z0-9_.-]", "_", clean_id)
 
     perturbations <- DNAStringSet()
-    for (j in 1:10) {
+    for (j in 1:100) {
       seq_mut <- seq_original
       for (coord in motif_coords) {
         len <- coord$end - coord$start + 1

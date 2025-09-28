@@ -471,7 +471,7 @@ def pred_on_fasta(fa, model):
     records = list(SeqIO.parse(fa, "fasta"))
     seqs = [str(i.seq) for i in records]
     seqs_dna = [dna_1hot_2vec(x) for x in seqs]
-    seqs_dna = torch.tensor(seqs_dna)
+    seqs_dna = torch.tensor(np.array(seqs_dna))
     model.eval()
     with torch.no_grad():
         pred, _ = model(seqs_dna)
