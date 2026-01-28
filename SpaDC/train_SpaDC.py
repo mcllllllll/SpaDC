@@ -8,9 +8,10 @@ from scipy.sparse import coo_matrix
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
+import os
     
 def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024, 
-                    lr=1e-2, lambda1=1e-7, random_seed=40, show_loss=False, save_model=False, 
+                    lr=1e-2, lambda1=1e-7, random_seed=40, show_loss=False, save_model=True, out_dir='result',
                     device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
     # seed_everything()
     set_seed(random_seed)
@@ -117,10 +118,10 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
         plt.legend()
         plt.tight_layout()
         plt.show()
-        fig.savefig('figures/loss.png', bbox_inches='tight')
+        fig.savefig(os.path.join(out_dir, "loss.png"), bbox_inches='tight')
 
     if save_model == True:
-        torch.save(model.state_dict(), 'result/model.pt')
+        torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
 
     cell_embedding = model.get_embedding().to('cpu').detach().numpy()
 

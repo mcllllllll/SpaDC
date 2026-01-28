@@ -6,10 +6,11 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 from scipy.sparse import coo_matrix
+import os
     
 def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100, n_epochs2=100, 
                        batch_size=1024, lr=1e-2, lambda1=1e-7, lambda2=1e-7, random_seed=40, 
-                       save_model=False, device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
+                       save_model=True, out_dir='result', device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
     # seed_everything()
     set_seed(random_seed)
 
@@ -149,7 +150,7 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
         print(print_msg)    
         
     if save_model == True:
-        torch.save(model.state_dict(), 'result/model.pt')     
+        torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))     
 
     integrate.obsm['SpaDC_bc'] = model.get_embedding().to('cpu').detach().numpy()  
     return integrate
