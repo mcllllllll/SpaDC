@@ -296,19 +296,6 @@ def mnn(ds1, ds2, names1, names2, knn = 20, save_on_disk = True, approx = True):
 
     return mutual
 
-def create_dictionary_knn(adata, use_rep, batch_name):
-    section_ids = np.array(adata.obs['batch'].unique())
-    knn_dict = dict()    
-    for batch_id in range(len(section_ids)):
-        batch_embed = adata.obsm[use_rep][adata.obs[batch_name] == section_ids[batch_id]]
-        batch_cellname = adata.obs_names[adata.obs[batch_name] == section_ids[batch_id]].values
-        nbrs = NearestNeighbors(n_neighbors=2).fit(batch_embed)
-        _, indices = nbrs.kneighbors(batch_embed)
-        for i in range(len(indices)):
-            knn_dict[batch_cellname[indices[i, 0]]] = batch_cellname[indices[i, 1]]
-        
-    return knn_dict
-
 def get_denoise_adata(adata, seq, model_state_dict, hidden_size=32, batch_size=1024):  
     adata.X[adata.X != 0] = 1
     atac = torch.FloatTensor(adata.X.todense().transpose())

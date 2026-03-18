@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-from .utils import dataset, set_seed, construct_graph_by_coordinate, trans_undirected_graph, dna_1hot_2vec, lap_reg, create_dictionary_mnn, create_dictionary_knn
+from .utils import dataset, set_seed, construct_graph_by_coordinate, trans_undirected_graph, dna_1hot_2vec, lap_reg, create_dictionary_mnn
 import torch
 from .model import SpaDC
 import torch.nn.functional as F
@@ -75,25 +75,31 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
         
         print(print_msg)
 
-    cell_embedding = model.get_embedding().to('cpu').detach().numpy()  
-    
-    integrate.obsm['SpaDC'] = cell_embedding
-    
+    integrate.obsm['SpaDC_raw'] = model.get_embedding().to('cpu').detach().numpy() 
+
     # unique index
     integrate.obs.index = [str(i) for i in np.arange(integrate.n_obs)]
-
+    section_ids = np.array(integrate.obs['batch'].unique())
+    
     anchor_ind = []
     positive_ind = []
-    negative_ind = []   
+    negative_ind = []    
+    
     print('Train with SpaDC_bc...')
     for epoch in tqdm(range(n_epochs1+1, n_epochs1+n_epochs2+1)):               
-        if epoch == n_epochs1+1:
-            # If knn_neigh>1, points in one slice may have multiple MNN points in another slice.
-            # not all points have MNN achors
-            mnn_dict = create_dictionary_mnn(integrate, use_rep='SpaDC', batch_name='batch', k=50, verbose=0)
-            knn_dict = create_dictionary_knn(integrate, use_rep='SpaDC', batch_name='batch')
+        if epoch % 20 == 1 or epoch == n_epochs1+1:
+            integrate.obsm['SpaDC'] = model.get_embedding().to('cpu').detach().numpy() 
 
+            mnn_dict = create_dictionary_mnn(integrate, use_rep='SpaDC', batch_name='batch', k=50, verbose=0)
             for batch_pair in mnn_dict.keys():  # pairwise compare for multiple batches
+                batchname_list = integrate.obs['batch'][mnn_dict[batch_pair].keys()]
+                embedding_dict = dict(zip(integrate.obs_names, integrate.obsm['SpaDC']))
+
+                cellname_by_batch_dict = dict()
+                for batch_id in range(len(section_ids)):
+                    cellname_by_batch_dict[section_ids[batch_id]] = integrate.obs_names[
+                        integrate.obs['batch'] == section_ids[batch_id]].values
+
                 anchor_list = []
                 positive_list = []
                 negative_list = []
@@ -101,7 +107,13 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
                     anchor_list.append(anchor)
                     positive_spot = mnn_dict[batch_pair][anchor][0]  # select the first positive spot
                     positive_list.append(positive_spot)
-                    negative_list.append(knn_dict[anchor])  # select the first knn spot 
+
+                    negative_pool = np.setdiff1d(cellname_by_batch_dict[batchname_list[positive_spot]], mnn_dict[batch_pair][anchor])
+
+                    # hard
+                    d_negs = [np.linalg.norm(embedding_dict[anchor] - embedding_dict[neg]) for neg in negative_pool]
+                    nearest_idx = np.argmin(d_negs)
+                    negative_list.append(negative_pool[nearest_idx])
 
                 batch_as_dict = dict(zip(list(integrate.obs_names), range(0, integrate.shape[0])))
                 anchor_ind = np.append(anchor_ind, list(map(lambda _: batch_as_dict[_], anchor_list)))
@@ -110,6 +122,9 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
 
         model.train()  
         train_loss = 0
+        bce_loss_a = 0
+        lap_loss_a = 0
+        tri_loss_a = 0
         n = 0      
         for train in train_dataloader:    
             data, label = train
@@ -136,19 +151,26 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
 
             loss = bce_loss + lambda2 * (lap_loss1 + lap_loss2) + tri_loss
 
+            bce_loss_a += bce_loss.item()
+            lap_loss_a += (lap_loss1 + lap_loss2).item()
+            tri_loss_a += tri_loss.item()
+
             train_loss += loss.item()
             n += 1
           
             optimizer.zero_grad() 
-            loss.backward()    
+            loss.backward()   
             optimizer.step()
         
-        train_loss = train_loss / n                
+        train_loss = train_loss / n  
+        bce_loss_a = bce_loss_a / n 
+        lap_loss_a = lap_loss_a / n
+        tri_loss_a = tri_loss_a / n
 
         print_msg = (f'[{epoch-n_epochs1}/{n_epochs2}]' + 
                      f'train_loss: {train_loss:.6f}')       
         print(print_msg)    
-        
+          
     if save_model == True:
         torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))     
 
