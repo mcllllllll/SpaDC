@@ -11,7 +11,7 @@ from tqdm import tqdm
 import os
     
 def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024, 
-                    lr=1e-2, lambda1=1e-7, random_seed=40, show_loss=False, save_model=True, out_dir='result',
+                    lr=1e-2, lambda1=1e-7, random_seed=40, show_loss=False, save_model=True, out_dir='',
                     device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
     # seed_everything()
     set_seed(random_seed)

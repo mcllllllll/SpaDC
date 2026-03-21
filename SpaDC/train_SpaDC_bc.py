@@ -10,7 +10,7 @@ import os
     
 def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100, n_epochs2=100, 
                        batch_size=1024, lr=1e-2, lambda1=1e-7, lambda2=1e-7, random_seed=40, 
-                       save_model=True, out_dir='result', device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
+                       save_model=True, out_dir='', device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')):
     # seed_everything()
     set_seed(random_seed)
 
