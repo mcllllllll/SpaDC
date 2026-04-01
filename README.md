@@ -30,6 +30,7 @@ Tutorials demonstrating how to use SpaDC on different datasets are included in t
 - Tutorial 2: [Running experiments on the MISAR dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_MISAR.ipynb)
 - Tutorial 3: [Running experiments on the P22 dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_P22.ipynb)
 - Tutorial 4: [Integrating P22 ATAC and H3K27ac datasets](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_integrate.ipynb)
+- Tutorial 5: [GRN inference](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/GRN.ipynb)
 
 
 
