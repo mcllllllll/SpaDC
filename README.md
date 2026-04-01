@@ -26,10 +26,10 @@ python setup.py install
 
 Tutorials demonstrating how to use SpaDC on different datasets are included in the Tutorials folder.
 
-- Tutorial 1: Step-by-step guide for preprocessing different datasets
-- Tutorial 2: Running experiments on the MISAR dataset
-- Tutorial 3: Running experiments on the P22 dataset
-- Tutorial 4: Integrating P22 ATAC and H3K27ac datasets
+- Tutorial 1: [Step-by-step guide for preprocessing different datasets](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/data_preprocess.ipynb)
+- Tutorial 2: [Running experiments on the MISAR dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_MISAR.ipynb)
+- Tutorial 3: [Running experiments on the P22 dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_P22.ipynb)
+- Tutorial 4: [Integrating P22 ATAC and H3K27ac datasets](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_integrate.ipynb)
 
 
 
