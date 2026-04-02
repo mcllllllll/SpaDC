@@ -311,18 +311,19 @@ def get_denoise_adata(adata, seq, model_state_dict, hidden_size=32, batch_size=1
     model = SpaDC(atac.shape[1], hidden_size=hidden_size)
     model.load_state_dict(torch.load(model_state_dict))
 
-    denoise = torch.tensor([])
-
+    denoise_list = []
     model.eval()
     with torch.no_grad():
         for train in train_dataloader:
             data, _ = train 
             output, _ = model(data)
 
-            denoise = torch.cat((denoise, output), axis=0)
+            denoise_list.append(output)
 
+    denoise = torch.cat(denoise_list, dim=0)
     adata_denoise = ad.AnnData(np.array(denoise).transpose())
     return adata_denoise
+
 
 def batch_entropy_mixing_score(data, batches, n_neighbors=100, n_pools=100, n_samples_per_pool=100):
     """
