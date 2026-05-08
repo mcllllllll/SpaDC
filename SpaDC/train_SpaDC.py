@@ -36,7 +36,7 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
     valid_data = dataset(X_valid, y_valid)
 
     train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    valid_dataloader = DataLoader(valid_data, batch_size=batch_size, shuffle=False)
+    valid_dataloader = DataLoader(valid_data, batch_size=batch_size, shuffle=True)
 
     model = SpaDC(atac.shape[1], hidden_size=hidden_size).to(device)
 
@@ -45,7 +45,8 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
     train_loss_list=[]
     valid_loss_list=[]
 
-    for epoch in tqdm(range(1, n_epochs+1)):
+    pbar = tqdm(range(1, n_epochs + 1))
+    for epoch in pbar:
         # train
         model.train()
         train_loss = 0
@@ -101,10 +102,10 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
             valid_loss = valid_loss / n2                
             valid_loss_list.append(valid_loss)
 
-        print_msg = (f'[{epoch}/{n_epochs}] ' + 
-                     f'train_loss: {train_loss:.6f} ' + 
-                     f'valid_loss: {valid_loss:.6f}')     
-        print(print_msg)
+        pbar.set_postfix(
+            train_loss=f'{train_loss:.6f}',
+            valid_loss=f'{valid_loss:.6f}'
+        )
     
     if show_loss == True:
         fig = plt.figure(figsize=(10, 8))
@@ -127,20 +128,3 @@ def train_SpaDC(adata, seq, hidden_size=32, n_epochs=100, batch_size=1024,
 
     adata.obsm['SpaDC'] = cell_embedding
     return adata
-
-
-
-
-
-
-
-
-
-
-
-             
-
-
-
-
-

@@ -41,7 +41,8 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     print('Pretrain with SpaDC...')
-    for epoch in tqdm(range(1, n_epochs1+1)):
+    pbar = tqdm(range(1, n_epochs1+1))
+    for epoch in pbar:
         # train
         model.train()
         train_loss = 0
@@ -70,10 +71,9 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
 
         train_loss =  train_loss / n
 
-        print_msg = (f'[{epoch}/{n_epochs1}] ' + 
-                     f'train_loss: {train_loss:.6f} ')
-        
-        print(print_msg)
+        pbar.set_postfix(
+            train_loss=f'{train_loss:.6f}'
+        )
 
     integrate.obsm['SpaDC_raw'] = model.get_embedding().to('cpu').detach().numpy() 
 
@@ -86,7 +86,8 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
     negative_ind = []    
     
     print('Train with SpaDC_bc...')
-    for epoch in tqdm(range(n_epochs1+1, n_epochs1+n_epochs2+1)):               
+    pbar = tqdm(range(n_epochs1+1, n_epochs1+n_epochs2+1))
+    for epoch in pbar:               
         if epoch % 20 == 1 or epoch == n_epochs1+1:
             integrate.obsm['SpaDC'] = model.get_embedding().to('cpu').detach().numpy() 
 
@@ -167,32 +168,12 @@ def train_SpaDC_bc(integrate, adata1, adata2, seq, hidden_size=32, n_epochs1=100
         lap_loss_a = lap_loss_a / n
         tri_loss_a = tri_loss_a / n
 
-        print_msg = (f'[{epoch-n_epochs1}/{n_epochs2}]' + 
-                     f'train_loss: {train_loss:.6f}')       
-        print(print_msg)    
+        pbar.set_postfix(
+            train_loss=f'{train_loss:.6f}'
+        )   
           
     if save_model == True:
         torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))     
 
     integrate.obsm['SpaDC_bc'] = model.get_embedding().to('cpu').detach().numpy()  
     return integrate
-
-
-
-
-
-
-
-             
-
-
-
-
-
-
-
-
-
-
-
-        
