@@ -7,6 +7,7 @@ library(BSgenome.Mmusculus.UCSC.mm10)
 library(Biostrings)
 library(stringr)
 setwd("./SpaDC/GRN")
+# Select appropriate CREs for downstream analysis
 peak_file <- "CREs.bed"
 output_dir <- "peak_motif_perturbation"
 dir.create(output_dir, showWarnings = FALSE)
@@ -30,7 +31,7 @@ peak_ids <- paste0(seqnames(peak_1344bp), "-", start(peak_gr), "-", end(peak_gr)
 names(peak_1344bp) <- peak_ids
 
 # === 3. Load mouse motif matrices from JASPAR2024 database ===
-jaspar_db <- dbConnect(RSQLite::SQLite(), "/tmp/JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
+jaspar_db <- dbConnect(RSQLite::SQLite(), "JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
 opts <- list(species = "Mus musculus", collection = "CORE")
 out <- getMatrixSet(jaspar_db, opts)
 if (!isTRUE(all.equal(name(out), names(out)))) {

@@ -4,7 +4,7 @@ library(Biostrings)
 setwd("./SpaDC/GRN")
 
 # Connect to JASPAR2024 database
-jaspar_db <- dbConnect(RSQLite::SQLite(), "/tmp/JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
+jaspar_db <- dbConnect(RSQLite::SQLite(), "JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
 opts <- list(species = "Mus musculus", collection = "CORE")
 motifs <- getMatrixSet(jaspar_db, opts)
 

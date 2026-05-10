@@ -26,10 +26,10 @@ python setup.py install
 
 Tutorials demonstrating how to use SpaDC on different datasets are included in the Tutorials folder.
 
-- Tutorial 1: [Running experiments on the MISAR dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_MISAR.ipynb)
-- Tutorial 2: [Running experiments on the P22 dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_P22.ipynb)
-- Tutorial 3: [Integrating P22 ATAC and H3K27ac datasets](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_integrate.ipynb)
-- Tutorial 4: [Inferring GRN on P22 dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Inferring_GRN_on_P22.ipynb)
+- Tutorial 1: [Running SpaDC on the MISAR dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_MISAR.ipynb)
+- Tutorial 2: [Running SpaDC on the P22 dataset](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_P22.ipynb)
+- Tutorial 3: [Integrating P22 ATAC and H3K27ac datasets by SpaDC](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Tutorial_integrate.ipynb)
+- Tutorial 4: [Inferring GRN on P22 dataset by SpaDC](https://github.com/mcllllllll/SpaDC/blob/master/Tutorials/Inferring_GRN_on_P22.ipynb)
 
 
 
