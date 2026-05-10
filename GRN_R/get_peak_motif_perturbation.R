@@ -6,8 +6,8 @@ library(GenomicRanges)
 library(BSgenome.Mmusculus.UCSC.mm10) 
 library(Biostrings)
 library(stringr)
-setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
-peak_file <- "result/6clusters_CRE.bed"
+setwd("./SpaDC/GRN")
+peak_file <- "CREs.bed"
 output_dir <- "peak_motif_perturbation"
 dir.create(output_dir, showWarnings = FALSE)
 

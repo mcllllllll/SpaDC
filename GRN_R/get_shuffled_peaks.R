@@ -1,7 +1,7 @@
 library(Biostrings)
 library(rtracklayer)
 library(BSgenome.Mmusculus.UCSC.mm10) 
-setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
+setwd("./SpaDC/GRN")
 
 get.seqs <- function (org, regions, no.cores=1) {
 
@@ -54,9 +54,9 @@ examples <- sample(bed, 10000)
 seqs <- get.seqs(BSgenome.Mmusculus.UCSC.mm10, examples, 1)
 writeXStringSet(seqs, "Mus_musculus_motif_fasta/example_peaks.fasta", format = "fasta", width = 1344)
 
-cmd1 <- "sed 's/\r$//' data/GRN/p22/Mus_musculus_motif_fasta/example_peaks.fasta > data/GRN/p22/Mus_musculus_motif_fasta/example_peaks_clean.fasta"
+cmd1 <- "sed 's/\r$//' ./SpaDC/GRN/Mus_musculus_motif_fasta/example_peaks.fasta > ./SpaDC/GRN/Mus_musculus_motif_fasta/example_peaks_clean.fasta"
 system(cmd1)
-cmd2 <- "fasta_ushuffle/fasta_ushuffle -k 2 < data/GRN/p22/Mus_musculus_motif_fasta/example_peaks_clean.fasta > data/GRN/p22/Mus_musculus_motif_fasta/shuffled_peaks.fasta"
+cmd2 <- "fasta_ushuffle/fasta_ushuffle -k 2 < ./SpaDC/GRN/Mus_musculus_motif_fasta/example_peaks_clean.fasta > ./SpaDC/GRN/Mus_musculus_motif_fasta/shuffled_peaks.fasta"
 system(cmd2)
 
 

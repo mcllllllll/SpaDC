@@ -1,7 +1,7 @@
 library(TFBSTools)
 library(RSQLite)
 library(Biostrings)
-setwd("/home/nas2/biod/machuanlong/data/GRN/p22")
+setwd("./SpaDC/GRN")
 
 # Connect to JASPAR2024 database
 jaspar_db <- dbConnect(RSQLite::SQLite(), "/tmp/JASPAR2024.sqlite", flags=RSQLite::SQLITE_RO)
